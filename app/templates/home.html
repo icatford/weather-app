@@ -8,7 +8,7 @@
 </head>
 <body>
 <h2>Weather Dashboard in Flask</h2>
-<form id="weatherForm" action="{{ url_for('render_results') }}" method="post">
+<form id="weatherForm" action="/results" method="post">
     Location Zip Code: <input id="weatherInput" type="text" name="zipCode"><br>
     <div class="form-check">
   <input class="form-check-input" type="radio" name="temp_units" value= "F" id="flexRadioDefault1">

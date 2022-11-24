@@ -13,13 +13,9 @@ def create_app():
     db.init_app(app)
 
     with app.app_context():
-
-       from app.ui import routes
-
-       app.register_blueprint(ui_bp)
-
-       # Create sql tables for data models
-
-       db.create_all()
+        from app.ui import routes
+        app.register_blueprint(ui_bp)
+        # Create sql tables for data models
+        db.create_all()
 
     return app

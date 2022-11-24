@@ -1,26 +1,20 @@
-from flask import Blueprint, render_template, requests, redirect
+from flask import Blueprint, render_template, request, redirect
+import requests
 from app.models import db, Result
 from datetime import datetime
 
 
 ui_bp = Blueprint(
-  'ui_bp', __name__,
-  template_folder='templates',
-  static_folder='static'
+    'ui_bp', __name__,
+    template_folder='templates',
+    static_folder='static'
 )
 
 
 # App Home Page
 @ui_bp.route('/')
 def home():
-    return render_template("home.html")
-
-
-# Results page
-@ui_bp.route('/results')
-def list_results():
-    results = Result.query
-    return render_template('results.html', results=results)
+    return render_template('home.html')
 
 
 @ui_bp.route('/api/results')
@@ -28,7 +22,7 @@ def results_all():
     return {'data': [result.to_dict() for result in Result.query]}
 
 
-@app.route('/results', methods=['POST'])
+@ui_bp.route('/results', methods=['POST'])
 def render_results():
     zip_code = request.form['zipCode']
     temp_units = request.form['temp_units']
@@ -69,6 +63,10 @@ def render_results():
     local_dt_obj = datetime.fromtimestamp(local_timestamp)
     print(local_dt_obj)
     # convert back to datetime object
+    result = Result(location=location, temp=temp)
+    db.session.add(result)
+    db.session.commit()
+
     return render_template('results.html', location=location, temp=temp,
                            feels_like=feels_like, weather=weather, iconurl=iconurl, humidity=humidity, minimum=minimum,
                            maximum=maximum, sunrise=sunrise, dt_obj=dt_obj, letter=letter, now=now)
@@ -85,3 +83,7 @@ def get_weather_results_metric(zip_code, api_key):
     r = requests.get(api_url)
     return r.json()
 
+
+def list_results():
+    results = Result.query
+    return render_template('results.html', results=results)
